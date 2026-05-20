@@ -1,7 +1,13 @@
 package com.cms;
 
+import com.cms.view.MainFrame;
+import javax.swing.SwingUtilities;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("College Management System starting...");
+        SwingUtilities.invokeLater(() -> {
+            MainFrame frame = new MainFrame();
+            frame.setVisible(true);
+        });
     }
 }
