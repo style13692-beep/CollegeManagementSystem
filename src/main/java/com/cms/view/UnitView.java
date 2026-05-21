@@ -3,10 +3,14 @@ package com.cms.view;
 import com.cms.controller.UnitController;
 import com.cms.model.Unit;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
+import static com.cms.view.ViewHelper.*;
+
 public class UnitView extends JFrame {
+
     private UnitController controller = new UnitController();
     private JTextField codeField, nameField, creditsField, descField, prereqField, searchField;
     private JTable table;
@@ -14,96 +18,116 @@ public class UnitView extends JFrame {
 
     public UnitView() {
         setTitle("Manage Units");
-        setSize(700, 500);
+        setSize(760, 580);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
 
-        // Form panel
-        JPanel formPanel = new JPanel(new GridLayout(6, 2, 5, 5));
-        formPanel.setBorder(BorderFactory.createTitledBorder("Add Unit"));
+        JPanel root = buildRoot(this, "📚  Manage Units");
 
-        codeField = new JTextField();
-        nameField = new JTextField();
-        creditsField = new JTextField();
-        descField = new JTextField();
-        prereqField = new JTextField();
+        // ── content area (NORTH form + CENTER table section)
+        JPanel content = new JPanel(new BorderLayout(0, 8));
+        content.setBackground(MainFrame.BG);
+        content.setBorder(new EmptyBorder(10, 14, 14, 14));
+        root.add(content, BorderLayout.CENTER);
 
-        formPanel.add(new JLabel("Unit Code:")); formPanel.add(codeField);
-        formPanel.add(new JLabel("Unit Name:")); formPanel.add(nameField);
-        formPanel.add(new JLabel("Credits:"));   formPanel.add(creditsField);
-        formPanel.add(new JLabel("Description:")); formPanel.add(descField);
-        formPanel.add(new JLabel("Prerequisites:")); formPanel.add(prereqField);
+        // ── Form ──────────────────────────────────────────────
+        JPanel formPanel = titledPanel("Add Unit", new GridBagLayout());
+        GridBagConstraints gc = new GridBagConstraints();
+        gc.insets = new Insets(4, 4, 4, 4);
+        gc.fill   = GridBagConstraints.HORIZONTAL;
 
-        JButton addBtn = new JButton("Add Unit");
-        formPanel.add(new JLabel()); formPanel.add(addBtn);
+        codeField    = field(0);
+        nameField    = field(0);
+        creditsField = field(0);
+        descField    = field(0);
+        prereqField  = field(0);
 
-        add(formPanel, BorderLayout.NORTH);
+        String[] labels = {"Unit Code:", "Unit Name:", "Credits:", "Description:", "Prerequisites:"};
+        JTextField[] fields = {codeField, nameField, creditsField, descField, prereqField};
 
-        // Search panel
-        JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        searchField = new JTextField(15);
-        JButton searchBtn = new JButton("Search");
-        JButton sortBtn = new JButton("Sort by Code");
-        searchPanel.add(new JLabel("Search by name:"));
-        searchPanel.add(searchField);
-        searchPanel.add(searchBtn);
-        searchPanel.add(sortBtn);
-        add(searchPanel, BorderLayout.CENTER);
+        for (int i = 0; i < labels.length; i++) {
+            gc.gridx = 0; gc.gridy = i; gc.weightx = 0.18;
+            formPanel.add(label(labels[i]), gc);
+            gc.gridx = 1; gc.weightx = 0.82;
+            formPanel.add(fields[i], gc);
+        }
 
-        // Table
-        tableModel = new DefaultTableModel(new String[]{"Code", "Name", "Credits", "Description", "Prerequisites"}, 0);
+        JButton addBtn = primaryBtn("Add Unit");
+        gc.gridx = 1; gc.gridy = labels.length; gc.weightx = 0;
+        gc.fill = GridBagConstraints.NONE; gc.anchor = GridBagConstraints.EAST;
+        formPanel.add(addBtn, gc);
+
+        content.add(formPanel, BorderLayout.NORTH);
+
+        // ── Search bar ────────────────────────────────────────
+        JPanel searchRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
+        searchRow.setBackground(MainFrame.BG);
+        searchField = field(18);
+        JButton searchBtn = secondaryBtn("Search by Name");
+        JButton sortBtn   = secondaryBtn("Sort by Code");
+        searchRow.add(label("Search:"));
+        searchRow.add(searchField);
+        searchRow.add(searchBtn);
+        searchRow.add(sortBtn);
+
+        // ── Table ─────────────────────────────────────────────
+        tableModel = new DefaultTableModel(
+                new String[]{"Code", "Name", "Credits", "Description", "Prerequisites"}, 0) {
+            public boolean isCellEditable(int r, int c) { return false; }
+        };
         table = new JTable(tableModel);
-        add(new JScrollPane(table), BorderLayout.SOUTH);
+        JScrollPane scroll = styledTable(table);
 
-        // Actions
-        addBtn.addActionListener(e -> addUnit());
+        JPanel tableSection = new JPanel(new BorderLayout(0, 6));
+        tableSection.setBackground(MainFrame.BG);
+        tableSection.add(searchRow, BorderLayout.NORTH);
+        tableSection.add(scroll,    BorderLayout.CENTER);
+        content.add(tableSection, BorderLayout.CENTER);
+
+        // ── Actions ───────────────────────────────────────────
+        addBtn.addActionListener(e    -> addUnit());
         searchBtn.addActionListener(e -> searchUnit());
-        sortBtn.addActionListener(e -> { controller.sortByCode(); refreshTable(); });
+        sortBtn.addActionListener(e   -> { controller.sortByCode(); refreshTable(); });
 
         refreshTable();
     }
 
     private void addUnit() {
         try {
-            String code = codeField.getText().trim();
-            String name = nameField.getText().trim();
-            int credits = Integer.parseInt(creditsField.getText().trim());
-            String desc = descField.getText().trim();
+            String code   = codeField.getText().trim();
+            String name   = nameField.getText().trim();
+            int credits   = Integer.parseInt(creditsField.getText().trim());
+            String desc   = descField.getText().trim();
             String prereq = prereqField.getText().trim();
 
             if (code.isEmpty() || name.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Code and Name are required.");
+                JOptionPane.showMessageDialog(this, "Code and Name are required.", "Validation", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-
             controller.addUnit(new Unit(code, name, credits, desc, prereq));
             refreshTable();
             clearFields();
             JOptionPane.showMessageDialog(this, "Unit added successfully!");
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Credits must be a number.");
+            JOptionPane.showMessageDialog(this, "Credits must be a number.", "Validation", JOptionPane.WARNING_MESSAGE);
         }
     }
 
     private void searchUnit() {
-        String keyword = searchField.getText().trim();
-        Unit found = controller.searchByName(keyword);
-        if (found != null) {
-            JOptionPane.showMessageDialog(this, "Found: " + found.getUnitCode() + " - " + found.getUnitName());
-        } else {
-            JOptionPane.showMessageDialog(this, "No unit found with that name.");
-        }
+        Unit found = controller.searchByName(searchField.getText().trim());
+        if (found != null)
+            JOptionPane.showMessageDialog(this, "Found: " + found.getUnitCode() + " – " + found.getUnitName());
+        else
+            JOptionPane.showMessageDialog(this, "No unit found with that name.", "Not found", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void refreshTable() {
         tableModel.setRowCount(0);
-        for (Unit u : controller.getAllUnits()) {
+        for (Unit u : controller.getAllUnits())
             tableModel.addRow(new Object[]{u.getUnitCode(), u.getUnitName(), u.getCredits(), u.getDescription(), u.getPrerequisites()});
-        }
     }
 
     private void clearFields() {
-        codeField.setText(""); nameField.setText("");
-        creditsField.setText(""); descField.setText(""); prereqField.setText("");
+        for (JTextField f : new JTextField[]{codeField, nameField, creditsField, descField, prereqField})
+            f.setText("");
     }
 }
