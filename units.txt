@@ -1,0 +1,14 @@
+BN205,Programming Fundamentals,15,Core programming using Python including loops and functions,None
+BN215,Database Design and Development,15,Relational database design and SQL querying,None
+BN222,Web Development Fundamentals,15,HTML5 CSS3 JavaScript and responsive design,BN205
+BN231,Software Development Skills and Tools,15,Git Agile CI/CD pipelines and industry dev tools,None
+BN301,Network Security,15,TCP/IP firewalls VPNs and penetration testing fundamentals,BN215
+BN304,Industry Project,20,Capstone project with an industry partner full SDLC,BN231
+BN309,Computer Forensics,15,Digital evidence acquisition and incident response,BN301
+BN318,Cloud Computing and DevOps,15,AWS Docker Kubernetes and infrastructure as code,BN231
+BN325,Artificial Intelligence and Machine Learning,15,Supervised learning neural networks and Python ML libraries,BN205
+ZZZ999,Last Unit,3,Desc,None
+AAA001,First Unit,3,Desc,None
+TST101,Test Unit,3,A test unit,None
+TST102,Find Me,3,Description,None
+TST103,Java Programming,3,Learn Java,None

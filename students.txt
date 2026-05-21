@@ -1,0 +1,17 @@
+MIT260001,John Doe,john.doe@student.itc.edu,2026
+MIT260002,Billie Eilish,billie.eilish@student.itc.edu,2026
+MIT260003,Taylor Swift,taylor.swift@student.itc.edu,2026
+MIT260004,Elon Musk,elon.musk@student.itc.edu,2026
+MIT260005,Ariana Grande,ariana.grande@student.itc.edu,2026
+MIT260006,Mark Zuckerberg,mark.zuckerberg@student.itc.edu,2026
+MIT260007,Emma Watson,emma.watson@student.itc.edu,2026
+MIT260008,Drake Graham,drake.graham@student.itc.edu,2026
+MIT260009,Beyonce Knowles,beyonce.knowles@student.itc.edu,2026
+MIT260010,Cristiano Ronaldo,c.ronaldo@student.itc.edu,2026
+MIT260011,Zendaya Coleman,zendaya.coleman@student.itc.edu,2026
+MIT260012,Ryan Reynolds,ryan.reynolds@student.itc.edu,2026
+S004,Zara Ali,zara@email.com,2024
+S005,Aaron King,aaron@email.com,2024
+S001,Alice Smith,alice@email.com,2024
+S002,Bob Jones,bob@email.com,2024
+S003,Charlie Brown,charlie@email.com,2023
